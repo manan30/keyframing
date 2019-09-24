@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { useRender } from 'react-three-fiber';
+import { useRender, useThree } from 'react-three-fiber';
 import * as THREE from 'three';
 
 import Clock from '../components/Clock';
@@ -11,22 +11,17 @@ function Scene() {
   const clockRef = useRef();
   const shapeRef = useRef();
 
+  const { camera } = useThree();
+
+  camera.position.set(0, 10, 50);
+
   const frames = 60;
   const duration = 1.0;
   const step = 1 / (duration * frames);
   let t = 0;
-
-  const a = {
-    x: 0.0,
-    y: 0.0,
-    z: 0.0
-  };
-
-  const b = {
-    x: 2.0,
-    y: 0.0,
-    z: 0.0
-  };
+  let index = 0;
+  let quat1;
+  let quat2;
 
   function lerp(x, y, dt) {
     return x + (y - x) * dt;
@@ -37,21 +32,52 @@ function Scene() {
   }
 
   useRender(() => {
-    const time = clockRef.current.getElapsedTime();
-    // const quaternion = new THREE.Quaternion();
-    // quaternion.setFromAxisAngle(
-    //   new THREE.Vector3(1.0, 1.0, -1.0),
-    //   THREE.Math.degToRad(30)
-    // );
+    const currTime = clockRef.current.getElapsedTime();
 
-    if (time > 1) return;
+    if (currTime > 17) return;
+
+    if (parseInt(currTime.toFixed(2), 10) - index === 1 && index < 8) {
+      t = 0;
+      index += 1;
+    }
+
+    quat1 = new THREE.Quaternion().setFromAxisAngle(
+      new THREE.Vector3(
+        Constants.keyframes[index].xa,
+        Constants.keyframes[index].ya,
+        Constants.keyframes[index].za
+      ).normalize(),
+      THREE.Math.degToRad(Constants.keyframes[index].theta)
+    );
+
+    quat2 = new THREE.Quaternion().setFromAxisAngle(
+      new THREE.Vector3(
+        Constants.keyframes[index + 1].xa,
+        Constants.keyframes[index + 1].ya,
+        Constants.keyframes[index + 1].za
+      ).normalize(),
+      THREE.Math.degToRad(Constants.keyframes[index + 1].theta)
+    );
 
     shapeRef.current.position.set(
-      lerp(a.x, b.x, ease(t)),
-      lerp(a.y, b.y, ease(t)),
-      lerp(a.z, b.z, ease(t))
+      lerp(
+        Constants.keyframes[index].x,
+        Constants.keyframes[index + 1].x,
+        ease(t)
+      ),
+      lerp(
+        Constants.keyframes[index].y,
+        Constants.keyframes[index + 1].y,
+        ease(t)
+      ),
+      lerp(
+        Constants.keyframes[index].z,
+        Constants.keyframes[index + 1].z,
+        ease(t)
+      )
     );
-    // shapeRef.current.position.set(2, 0, 0);
+
+    THREE.Quaternion.slerp(quat1, quat2, shapeRef.current.quaternion, ease(t));
 
     t += step;
   });
