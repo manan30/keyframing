@@ -16,10 +16,9 @@
   },
   "scripts": {
     "start": "BROWSER='Firefox Developer Edition' react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "build": "react-scripts build"
   },
+  "homepage": "https://mananjoshi.me/projects/keyframing",
   "eslintConfig": {
     "extends": "react-app"
   },
