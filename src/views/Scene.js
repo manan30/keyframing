@@ -34,7 +34,7 @@ function Scene() {
   useRender(() => {
     const currTime = clockRef.current.getElapsedTime();
 
-    if (currTime > 17) return;
+    if (currTime > 10) return;
 
     if (parseInt(currTime.toFixed(2), 10) - index === 1 && index < 8) {
       t = 0;
@@ -60,24 +60,12 @@ function Scene() {
     );
 
     shapeRef.current.position.set(
-      lerp(
-        Constants.keyframes[index].x,
-        Constants.keyframes[index + 1].x,
-        ease(t)
-      ),
-      lerp(
-        Constants.keyframes[index].y,
-        Constants.keyframes[index + 1].y,
-        ease(t)
-      ),
-      lerp(
-        Constants.keyframes[index].z,
-        Constants.keyframes[index + 1].z,
-        ease(t)
-      )
+      lerp(Constants.keyframes[index].x, Constants.keyframes[index + 1].x, t),
+      lerp(Constants.keyframes[index].y, Constants.keyframes[index + 1].y, t),
+      lerp(Constants.keyframes[index].z, Constants.keyframes[index + 1].z, t)
     );
 
-    THREE.Quaternion.slerp(quat1, quat2, shapeRef.current.quaternion, ease(t));
+    THREE.Quaternion.slerp(quat1, quat2, shapeRef.current.quaternion, t);
 
     t += step;
   });
