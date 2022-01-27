@@ -12,7 +12,7 @@
     "react-scripts": "3.1.2",
     "react-three-fiber": "2.4.3",
     "styled-components": "4.3.2",
-    "three": "0.108.0"
+    "three": "0.137.0"
   },
   "scripts": {
     "start": "BROWSER='Firefox Developer Edition' react-scripts start",
